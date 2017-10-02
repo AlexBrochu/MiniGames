@@ -6,15 +6,15 @@
     <el-button type="primary" v-show="!isStarted" @click="startGame">Start</el-button>
 
     <div v-show="isStarted">
-      <p class="legend" v-if="!yourTurn">Simon's turn. Look carefully!</p>
-      <p class="legend" v-if="yourTurn">It's your turn, repeat the pattern :)</p>
+      <p class="legend" v-if="!isYourTurn">Simon's turn. Look carefully!</p>
+      <p class="legend" v-if="isYourTurn">It's your turn, repeat the pattern :)</p>
       <el-row :gutter="20">
-        <el-col :span="12"><div :ref="YELLOW" class="box bg bg-yellow"></div></el-col>
-        <el-col :span="12"><div :ref="BLUE" class="box bg bg-blue"></div></el-col>
+        <el-col :span="12"><div disable :ref="YELLOW" class="box bg bg-yellow" @click="guessColor(YELLOW)"></div></el-col>
+        <el-col :span="12"><div disable :ref="BLUE" class="box bg bg-blue" @click="guessColor(BLUE)"></div></el-col>
       </el-row>
       <el-row :gutter="20">
-        <el-col :span="12"><div :ref="RED" class="box bg bg-red"></div></el-col>
-        <el-col :span="12"><div :ref="GREEN" class="box bg bg-green"></div></el-col>
+        <el-col :span="12"><div :ref="RED" class="box bg bg-red" @click="guessColor(RED)"></div></el-col>
+        <el-col :span="12"><div :ref="GREEN" class="box bg bg-green" @click="guessColor(GREEN)"></div></el-col>
       </el-row>
     </div>
 
@@ -29,13 +29,14 @@ export default {
   data () {
     return {
       isStarted: false,
-      yourTurn: false,
+      isYourTurn: false,
       YELLOW: 1,
       BLUE: 2,
       RED: 3,
       GREEN: 4,
       listOfColors: [],
-      numberOfStartingColors: 4
+      numberOfStartingColors: 4,
+      numberOfGuesses: 0
     }
   },
 
@@ -57,7 +58,6 @@ export default {
       if (newOpacity !== 1) {
         setTimeout(this.changeOpacity.bind(null, color, 1, numberOfColors), 800)
       } else {
-        console.log(newOpacity, numberOfColors)
         this.addNewColor(numberOfColors)
       }
     },
@@ -68,10 +68,44 @@ export default {
 
     addNewColor (numberOfColors) {
       if (numberOfColors > 0) {
-        setTimeout(this.showNewColor.bind(null, numberOfColors - 1), 2000)
+        setTimeout(this.showNewColor.bind(null, numberOfColors - 1), 1500)
       } else {
-        this.yourTurn = true
+        this.changeToYourTurn()
       }
+    },
+
+    changeToYourTurn () {
+      this.numberOfGuesses = 0
+      for (var key in this.$refs) {
+        this.$refs[key].className = this.$refs[key].className + ' active'
+      }
+      this.isYourTurn = true
+    },
+
+    guessColor (colorGuessed) {
+      if (this.isYourTurn) {
+        if (this.listOfColors[this.numberOfGuesses] === colorGuessed) {
+          this.numberOfGuesses += 1
+        } else {
+          this.gameOver()
+        }
+
+        if (this.numberOfGuesses >= this.listOfColors.length) {
+          this.isYourTurn = false
+        }
+      }
+    },
+
+    gameOver () {
+      this.isYourTurn = false
+      this.isStarted = false
+      var level = this.listOfColors.length - this.numberOfStartingColors + 1
+      console.log(level)
+      this.$message.error({
+        message: 'You lost! Your level was ' + level + '!',
+        duration: 100000
+      })
+      this.listOfColors = []
     }
   }
 }
@@ -88,6 +122,11 @@ export default {
   .box {
     height:300px;
     transition: opacity 0.8s;
+    cursor:pointer;
+  }
+
+  .active:active {
+    background-color:#1F2D3D;
   }
 
   .legend {

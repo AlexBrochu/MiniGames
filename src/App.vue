@@ -92,4 +92,8 @@ header {
   padding:20px 0px;
   font-size:18px;
 }
+
+.el-message__group p {
+  font-size:18px;
+}
 </style>

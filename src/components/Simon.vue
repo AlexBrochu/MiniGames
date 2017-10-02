@@ -36,7 +36,8 @@ export default {
       GREEN: 4,
       listOfColors: [],
       numberOfStartingColors: 4,
-      numberOfGuesses: 0
+      numberOfGuesses: 0,
+      transitionDuration: 1000
     }
   },
 
@@ -49,16 +50,16 @@ export default {
     showNewColor (numberOfColors) {
       var newColor = this.getRandomColor()
       this.listOfColors.push(newColor)
-      this.changeOpacity(newColor, 0.3, numberOfColors)
+      this.changeOpacity(newColor, 0.3, this.addNewColor, numberOfColors)
     },
 
-    changeOpacity (color, newOpacity, numberOfColors) {
+    changeOpacity (color, newOpacity, callback, numberOfColors) {
       this.$refs[color].style.opacity = newOpacity
 
       if (newOpacity !== 1) {
-        setTimeout(this.changeOpacity.bind(null, color, 1, numberOfColors), 800)
+        setTimeout(this.changeOpacity.bind(null, color, 1, callback, numberOfColors), 800)
       } else {
-        this.addNewColor(numberOfColors)
+        callback(numberOfColors)
       }
     },
 
@@ -68,9 +69,18 @@ export default {
 
     addNewColor (numberOfColors) {
       if (numberOfColors > 0) {
-        setTimeout(this.showNewColor.bind(null, numberOfColors - 1), 1500)
+        setTimeout(this.showNewColor.bind(null, numberOfColors - 1), this.transitionDuration)
       } else {
         this.changeToYourTurn()
+      }
+    },
+
+    loopThroughColors (numberOfColors) {
+      if (numberOfColors > 0) {
+        var index = this.listOfColors.length - numberOfColors
+        setTimeout(this.changeOpacity.bind(null, this.listOfColors[index], 0.5, this.loopThroughColors, numberOfColors - 1), this.transitionDuration)
+      } else {
+        this.addNewColor(1)
       }
     },
 
@@ -82,6 +92,14 @@ export default {
       this.isYourTurn = true
     },
 
+    changeToSimonsTurn () {
+      this.isYourTurn = false
+      for (var key in this.$refs) {
+        this.$refs[key].className = this.$refs[key].className.replace(' active', '')
+      }
+      this.loopThroughColors(this.listOfColors.length)
+    },
+
     guessColor (colorGuessed) {
       if (this.isYourTurn) {
         if (this.listOfColors[this.numberOfGuesses] === colorGuessed) {
@@ -91,7 +109,7 @@ export default {
         }
 
         if (this.numberOfGuesses >= this.listOfColors.length) {
-          this.isYourTurn = false
+          this.changeToSimonsTurn()
         }
       }
     },
@@ -103,7 +121,7 @@ export default {
       console.log(level)
       this.$message.error({
         message: 'You lost! Your level was ' + level + '!',
-        duration: 100000
+        showClose: true
       })
       this.listOfColors = []
     }

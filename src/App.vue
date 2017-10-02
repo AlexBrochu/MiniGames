@@ -5,8 +5,8 @@
     </header>
     <el-row  :gutter="20">
       <el-col :span="8">
-        <el-menu class="el-menu-vertical-demo" router="true">
-          <el-menu-item index="home">
+        <el-menu class="el-menu-vertical-demo" :router="true">
+          <el-menu-item index="/">
             <i class="fa fa-home"></i>
             <template slot="title">Home</template>
           </el-menu-item>

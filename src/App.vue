@@ -4,8 +4,8 @@
       Mini Games!
     </header>
     <el-row  :gutter="20">
-      <el-col :span="8">
-        <el-menu class="el-menu-vertical-demo" :router="true">
+      <el-col :xs="24" :sm="24" :md="8" :lg="8">
+        <el-menu :router="true" :mode="windowWidth > 990 ? 'vertical' : 'horizontal'">
           <el-menu-item index="/">
             <i class="fa fa-home"></i>
             <template slot="title">Home</template>
@@ -16,7 +16,7 @@
           </el-menu-item>
         </el-menu>
       </el-col>
-      <el-col :span="16">
+      <el-col :xs="24" :sm="24" :md="16" :lg="16">
         <router-view></router-view>
       </el-col>
     </el-row>
@@ -25,7 +25,23 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+      windowWidth: window.innerWidth
+    }
+  },
+  methods: {
+    handleWindowResize (event) {
+      this.windowWidth = event.currentTarget.innerWidth
+    }
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.handleWindowResize)
+  },
+  mounted () {
+    window.addEventListener('resize', this.handleWindowResize)
+  }
 }
 </script>
 

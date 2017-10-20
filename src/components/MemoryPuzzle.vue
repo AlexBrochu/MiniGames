@@ -54,6 +54,9 @@ export default {
 
       if (!this.pieces[arrayId[0]][arrayId[1]].found) {
         if (this.numberOfTurnedTiles < 2) {
+          iconElement.setAttribute('class', 'fa fa-' + this.pieces[arrayId[0]][arrayId[1]].icon)
+          iconElement.setAttribute('style', 'color:' + this.pieces[arrayId[0]][arrayId[1]].color)
+
           this.numberOfTurnedTiles++
 
           flipperElement.setAttribute('style', 'transform: rotateY(180deg)')
@@ -67,8 +70,6 @@ export default {
           if (this.numberOfTurnedTiles === 2) {
             this.numberOfTries++
 
-            console.log(this.tilesFound[0].icon, this.tilesFound[1].icon)
-
             if (this.tilesFound[0].icon === this.tilesFound[1].icon) {
               this.setTilesDiscovered()
             } else {
@@ -81,6 +82,8 @@ export default {
     flipTilesBack () {
       for (var i = 0; i < this.tilesFound.length; i++) {
         var iconElement = document.getElementById(this.tilesFound[i].x + ' ' + this.tilesFound[i].y)
+        iconElement.setAttribute('class', 'fa fa-tumbs-up')
+        iconElement.setAttribute('style', 'color:white')
         var flipperElement = iconElement.parentNode.parentNode
         flipperElement.setAttribute('style', 'transform: rotateY(0deg)')
       }
@@ -103,6 +106,36 @@ export default {
 
       this.totalNumberOfTurnedTiles += 2
       this.resetTurn()
+
+      if (this.totalNumberOfTurnedTiles === 2) {
+        this.$confirm('Do you want to restart the game ?', 'You win !!!', {
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          type: 'info'
+        }).then(() => {
+          this.restartGame()
+        })
+      }
+    },
+    restartGame () {
+      this.totalNumberOfTurnedTiles = 0
+      this.numberOfTries = 0
+      this.resetPieces()
+      this.createPuzzle()
+    },
+    resetPieces () {
+      this.pieces = []
+      for (var x = 0; x < this.maxX; x++) {
+        for (var y = 0; y < this.maxY; y++) {
+          var iconElement = document.getElementById(x + ' ' + y)
+          var backElement = iconElement.parentNode
+          backElement.className = backElement.className + ' bg bg-light-gray'
+          var flipperElement = backElement.parentNode
+          flipperElement.setAttribute('style', 'transform:rotateY(0deg)')
+          var boxElement = flipperElement.parentNode
+          boxElement.className = boxElement.className.replace(' found', '')
+        }
+      }
     },
     resetTurn () {
       this.numberOfTurnedTiles = 0
@@ -141,13 +174,8 @@ export default {
             }
           }
 
-          console.log(x, y, this.icons[i])
-
           var piece = { 'icon': this.icons[i], 'color': this.colors[colorOfPair] }
           this.pieces[x][y] = piece
-          var icon = document.getElementById(x + ' ' + y)
-          icon.setAttribute('class', 'fa fa-' + piece.icon)
-          icon.setAttribute('style', 'color:' + piece.color)
 
           pair++
         }

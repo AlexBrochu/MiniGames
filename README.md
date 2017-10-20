@@ -5,6 +5,7 @@
 
 Games featured in this project
 * Simon
+* Memory Puzzle
 
 ## Build for devs
 

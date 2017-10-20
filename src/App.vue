@@ -14,7 +14,7 @@
             <i class="el-icon-menu"></i>
             <template slot="title">Simon</template>
           </el-menu-item>
-          <el-menu-item index="memoryPuzzle">
+          <el-menu-item index="memory-puzzle">
             <i class="fa fa-clone" aria-hidden="true"></i>
             <template slot="title">Memory Puzzle</template>
           </el-menu-item>
@@ -81,8 +81,8 @@ header {
   background-color:#20A0FF;
 }
 
-.bg-light-blue {
-  background-color:#58B7FF;
+.bg-light-gray {
+  background-color:#E5E9F2;
 }
 
 .bg-red {

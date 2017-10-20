@@ -1,13 +1,18 @@
 <template>
   <div class="memory-puzzle padding-20">
     <h1>Test your mnemonic skills</h1>
-    <p>Try to find all the pairs of icons with de same color in the least possible shots by returning the squares.</p>
+    <p>Try to find all the pairs of icons with de same color in the least possible shots by returning the gray tiles. Each time you return two tiles, your number of tries increase.
+      If the two tiles doesn't display the same image, they will turn again. You win when all tiles are turned!</p>
 
+    <p class="legend">Number of tries: {{ numberOfTries }}</p>
     <div id="puzzleContainer">
       <el-row v-for="y in maxY" :key="y" :gutter="10">
-        <el-col v-for="x in maxX" :key="x" :xs="4" :sm="4" :md="4" :lg="4">
-          <div class="box bg bg-light-blue">
-            <i class="fa fa-thumbs-up" v-bind:id="(x - 1) + '' + (y - 1)"></i>
+        <el-col v-for="x in maxX" :key="x" :xs="8" :sm="4" :md="4" :lg="4">
+          <div class="box">
+            <div class="flipper" @click.stop="flipTile">
+              <div class="front bg bg-light-gray"></div>
+              <div class="back bg bg-light-gray"><i class="fa fa-thumbs-up" v-bind:id="(x - 1) + '' + (y - 1)"></i></div>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -25,10 +30,15 @@ export default {
       colors: ['#FF4949', '#13CE66', '#20A0FF', '#1F2D3D', 'darkviolet', '#F7BA2A'],
       pieces: [],
       maxX: 6,
-      maxY: 6
+      maxY: 6,
+      numberOfTries: 0
     }
   },
   methods: {
+    flipTile (event) {
+      event.target.parentNode.setAttribute('style', 'transform: rotateY(180deg)')
+      console.log(event, event.target.parentNode)
+    },
     createPuzzle () {
       this.initializePieces()
       this.fillPieces()
@@ -62,8 +72,6 @@ export default {
             }
           }
 
-          console.log(x, y, this.icons[i], this.colors[colorOfPair])
-
           var piece = { 'icon': this.icons[i], 'color': this.colors[colorOfPair] }
           this.pieces[x][y] = piece
           var icon = document.getElementById(x + '' + y)
@@ -82,13 +90,52 @@ export default {
 </script>
 
 <style scoped>
+.legend {
+  margin-top:30px;
+  font-style:italic;
+}
+
 .fa {
-  top:25%;
-  left:30%;
+  top:35%;
+  left:39%;
 }
 
 .box {
-  height:50px;
+  height:80px;
   margin-top:10px;
+  cursor:pointer;
+  perspective: 1000px;
+}
+
+.flipper, .back, .front {
+  height:80px;
+  width:100%;
+}
+
+/* flip speed goes here */
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+	position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	backface-visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+	z-index: 2;
+	/* for firefox 31 */
+	transform: rotateY(0deg);
+}
+
+/* back, initially hidden pane */
+.back {
+	transform: rotateY(180deg);
 }
 </style>

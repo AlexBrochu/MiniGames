@@ -107,7 +107,7 @@ export default {
       this.totalNumberOfTurnedTiles += 2
       this.resetTurn()
 
-      if (this.totalNumberOfTurnedTiles === 2) {
+      if (this.totalNumberOfTurnedTiles === this.maxX * this.maxY) {
         this.$confirm('Do you want to restart the game ?', 'You win !!!', {
           confirmButtonText: 'Yes',
           cancelButtonText: 'No',

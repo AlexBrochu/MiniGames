@@ -3,7 +3,7 @@
     <header class="padding-20 bg bg-blue">
       Mini Games!
     </header>
-    <el-row :gutter="20">
+    <el-row>
       <el-col :xs="24" :sm="24" :md="8" :lg="8">
         <el-menu :router="true" :mode="windowWidth > 990 ? 'vertical' : 'horizontal'">
           <el-menu-item index="/">

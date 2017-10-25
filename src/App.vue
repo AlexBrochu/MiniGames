@@ -3,7 +3,7 @@
     <header class="padding-20 bg bg-blue">
       Mini Games!
     </header>
-    <el-row  :gutter="20">
+    <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="8" :lg="8">
         <el-menu :router="true" :mode="windowWidth > 990 ? 'vertical' : 'horizontal'">
           <el-menu-item index="/">
@@ -13,6 +13,10 @@
           <el-menu-item index="simon">
             <i class="el-icon-menu"></i>
             <template slot="title">Simon</template>
+          </el-menu-item>
+          <el-menu-item index="memory-puzzle">
+            <i class="fa fa-clone" aria-hidden="true"></i>
+            <template slot="title">Memory Puzzle</template>
           </el-menu-item>
         </el-menu>
       </el-col>
@@ -75,6 +79,10 @@ header {
 
 .bg-blue {
   background-color:#20A0FF;
+}
+
+.bg-light-gray {
+  background-color:#E5E9F2;
 }
 
 .bg-red {
